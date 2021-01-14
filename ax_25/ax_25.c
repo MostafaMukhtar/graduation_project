@@ -207,7 +207,7 @@ bool Check_Source(){
 
 uint8_t check_control_field(){
 
-if(received_ax_25_frame[15]&0x01){
+if(!(received_ax_25_frame[15]&0x01)){
 
     /****** I FRAME ****/
 
