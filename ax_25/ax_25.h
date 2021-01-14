@@ -49,12 +49,11 @@ void ax_25_make_I_frame(uint8_t *arr_data);
 void ax_25_make_S_U_frame(uint8_t type);
 void test();
 uint8_t ax_25_create_control_field(uint8_t type);
-
-
 bool check_crc();
 bool Check_distnation();
 bool Check_Source();
 uint8_t check_control_field();
+void clear_256B(uint8_t *arr);
 
 
 

@@ -1,8 +1,9 @@
 #include "ax_25.h"
 
 uint8_t out[AX_25_FRAME_LEN],received_ax_25_frame[AX_25_FRAME_LEN];
+uint8_t tx_buff[3][AX_25_FRAME_LEN]; // window
 uint8_t counter=0,VS=0,VR=0;
-
+uint8_t window_pointer=0;// point to the next free position in the tx_buff
 const uint8_t des_addr[AX_25_CALLSIGN_LEN]={'N','J','7','P',' ',' '};
 const uint8_t source_addr[AX_25_CALLSIGN_LEN]={'N','7','L','E','M',' '};
 uint8_t SSID=0x00;
@@ -118,14 +119,53 @@ out[counter++]=(uint8_t)crc;
 out[counter++]=(uint8_t)(crc>>8);
 ax_25_set_end_flage();
 
+//out
+
+//trans
+VS=VS+1;
+//window_pointer=0
+memcpy(tx_buff[window_pointer],out,AX_25_FRAME_LEN);
+//tx_buff[window_pointer]=out
+//out=0
+
 int i=0;
 
 for(;i<AX_25_FRAME_LEN;i++){
    printf("%x ",out[i]);
 
 }
+clear_256B(out);//clear out
+//window_pointer++;
+window_pointer++;
+if(window_pointer>2) window_pointer=0; //if window_pointer>2
+                                        //window_pointer=0
+
+i=0;
+for(;i<AX_25_FRAME_LEN;i++){
+   printf("%x ",tx_buff[0][i]);
 
 }
+
+
+
+
+
+
+
+
+
+}
+
+void clear_256B(uint8_t *arr){
+int i =0;
+for(;i<256;i++){
+    arr[i]=0;
+}
+}
+
+
+
+
 
 void ax_25_make_S_U_frame(uint8_t type){
 unsigned short crc;
@@ -147,6 +187,15 @@ for(;i<AX_25_FRAME_LEN;i++){
 
 }
 }
+
+
+
+
+
+
+
+
+
 
 
 /***********receiving************/
