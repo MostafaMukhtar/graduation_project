@@ -346,6 +346,8 @@ return 0;
 
 }
 
+
+
 void set_received_ax_25_frame(uint8_t arr[]){
 int i=0;
 for(;i<AX_25_FRAME_LEN;i++){
@@ -359,54 +361,40 @@ received_ax_25_frame[i]=arr[i];
 void deframing(uint8_t rx_frame[]){
 set_received_ax_25_frame(rx_frame);
 if(!check_crc()){/*invalid crc*/}
-if(!Check_distnation()){/*invalid des */}
+if(!Check_distnation()){/*invalid destnation */}
 if(!Check_Source()){/*invalid source*/}
 switch(check_control_field()){
-case I: /*I response */break;
+case I: /*I response */ break;
+
 case S_RR:/*RR_RESPONSE */break;
 case S_RNR:/*RNR_RESPONSE */break;
 case S_REJ:/*REJ_RESPONSE */break;
 case S_SREJ:/*SREJ_RESPONSE */break;
 
+case U_SABM: /* U_SABM_RESPONCE */ break;
+case U_DISC: /* U_DISC_RESPONCE */ break;
+case U_DM: /* U_DM_RESPONCE */ break;
+case U_UA: /* U_UA_RESPONCE */ break;
+case U_TEST: /* U_TEST_RESPONCE */ break;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 
 
 }
 
 
-
-
-
-
-
-
-
-
+uint8_t GET_NS()
+{
+   return (received_ax_25_frame[15]&0x0E)>>1 ; //get NS from control field byte
 
 }
 
+uint8_t GET_NR()
+{
+   return (received_ax_25_frame[15]&0xE0)>>5 ; //get NR from control field byte
 
+}
 
 
 
