@@ -359,17 +359,42 @@ received_ax_25_frame[i]=arr[i];
 
 
 void deframing(uint8_t rx_frame[]){
+uint8_t NR=0,NS=0;
+
 set_received_ax_25_frame(rx_frame);
 if(!check_crc()){/*invalid crc*/}
 if(!Check_distnation()){/*invalid destnation */}
 if(!Check_Source()){/*invalid source*/}
 switch(check_control_field()){
-case I: /*I response */ break;
+case I: /*I response */
+    NR=GET_NR();
+    NS=GET_NS();
+    if(NR!=VS){/*INVALID NR*/}
+    if(NS!=VR){/*INVALID NS*/}
 
-case S_RR:/*RR_RESPONSE */break;
-case S_RNR:/*RNR_RESPONSE */break;
-case S_REJ:/*REJ_RESPONSE */break;
-case S_SREJ:/*SREJ_RESPONSE */break;
+
+
+    break;
+
+case S_RR:/*RR_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
+case S_RNR:/*RNR_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
+case S_REJ:/*REJ_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+    break;
+case S_SREJ:/*SREJ_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
 
 case U_SABM: /* U_SABM_RESPONCE */ break;
 case U_DISC: /* U_DISC_RESPONCE */ break;
