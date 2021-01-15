@@ -360,6 +360,7 @@ received_ax_25_frame[i]=arr[i];
 
 void deframing(uint8_t rx_frame[]){
 uint8_t NR=0,NS=0;
+uint8_t data[AX_25_DATA_FIELD_LEN];
 
 set_received_ax_25_frame(rx_frame);
 if(!check_crc()){/*invalid crc*/}
@@ -371,6 +372,9 @@ case I: /*I response */
     NS=GET_NS();
     if(NR!=VS){/*INVALID NR*/}
     if(NS!=VR){/*INVALID NS*/}
+    memcpy(data,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+    /*SSP-->DATA*/
+
 
 
 
@@ -412,6 +416,7 @@ case U_TEST: /* U_TEST_RESPONCE */ break;
 uint8_t GET_NS()
 {
    return (received_ax_25_frame[15]&0x0E)>>1 ; //get NS from control field byte
+
 
 }
 
