@@ -81,17 +81,17 @@ uint8_t ax_25_create_control_field(uint8_t type){           /*create the control
 uint8_t NS=VS,NR=VR;
 switch(type){
 case S_RR:
-    return(NR<<5)|0X10|(S_RR<<2)|0X01;
+    return(NR<<5)|0X00|(S_RR<<2)|0X01;
 case S_RNR:
-    return(NR<<5)|0X10|(S_RNR<<2)|0X01;
+    return(NR<<5)|0X00|(S_RNR<<2)|0X01;
 case S_REJ:
-    return(NR<<5)|0X10|(S_REJ<<2)|0X01;
+    return(NR<<5)|0X00|(S_REJ<<2)|0X01;
 case S_SREJ:
-    return(NR<<5)|0X10|(S_SREJ<<2)|0X01;
+    return(NR<<5)|0X00|(S_SREJ<<2)|0X01;
 case U_SABM:case U_DISC:case U_DM:case U_UA:case U_TEST:
     return type;
 case I:
-    return (NR<<5)| 0x10 |(NS<<1)|0x00 ;
+    return (NR<<5)| 0x00 |(NS<<1)|0x00 ;
 default : return 0;
 }
 }
@@ -155,6 +155,8 @@ out[counter++]=(uint8_t)crc;
 out[counter++]=(uint8_t)(crc>>8);
 ax_25_set_end_flage();
 
+
+
 //out
 
 //trans
@@ -181,13 +183,6 @@ for(;i<AX_25_FRAME_LEN;i++){
    printf("%x ",tx_buff[0][i]);
 
 }
-
-
-
-
-
-
-
 
 
 }
@@ -363,55 +358,55 @@ uint8_t NR=0,NS=0;
 uint8_t data[AX_25_DATA_FIELD_LEN];
 
 set_received_ax_25_frame(rx_frame);
-if(!check_crc()){/*invalid crc*/}
-if(!Check_distnation()){/*invalid destnation */}
-if(!Check_Source()){/*invalid source*/}
-switch(check_control_field()){
-case I: /*I response */
-    NR=GET_NR();
-    NS=GET_NS();
-    if(NR!=VS){/*INVALID NR*/}
-    if(NS!=VR){/*INVALID NS*/}
-    memcpy(data,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
-    /*SSP-->DATA*/
+if(check_crc()){/*valid crc*/
+    if(Check_distnation()){/*valid destnation */
+        if(Check_Source()){/*valid source*/
+            switch(check_control_field()){
+                case I: /*I response */
+                    NR=GET_NR();
+                    NS=GET_NS();
+                    if(NR!=VS){/*INVALID NR*/}
+                    if(NS!=VR){/*INVALID NS*/}
+                    memcpy(data,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+                    /*SSP-->DATA*/
 
 
 
 
-    break;
+                    break;
 
-case S_RR:/*RR_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
+                case S_RR:/*RR_RESPONSE */
+                    NR=GET_NR();
+                    if(NR!=VS){/*INVALID NR*/}
 
-    break;
-case S_RNR:/*RNR_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
+                    break;
+                case S_RNR:/*RNR_RESPONSE */
+                    NR=GET_NR();
+                    if(NR!=VS){/*INVALID NR*/}
 
-    break;
-case S_REJ:/*REJ_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
-    break;
-case S_SREJ:/*SREJ_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
+                    break;
+                case S_REJ:/*REJ_RESPONSE */
+                    NR=GET_NR();
+                    if(NR!=VS){/*INVALID NR*/}
+                    break;
+                case S_SREJ:/*SREJ_RESPONSE */
+                    NR=GET_NR();
+                    if(NR!=VS){/*INVALID NR*/}
 
-    break;
+                    break;
 
-case U_SABM: /* U_SABM_RESPONCE */ break;
-case U_DISC: /* U_DISC_RESPONCE */ break;
-case U_DM: /* U_DM_RESPONCE */ break;
-case U_UA: /* U_UA_RESPONCE */ break;
-case U_TEST: /* U_TEST_RESPONCE */ break;
+                case U_SABM: /* U_SABM_RESPONCE */ break;
+                case U_DISC: /* U_DISC_RESPONCE */ break;
+                case U_DM: /* U_DM_RESPONCE */ break;
+                case U_UA: /* U_UA_RESPONCE */ break;
+                case U_TEST: /* U_TEST_RESPONCE */ break;
 
+                }
+}
 }
 
-
-
 }
-
+}
 
 uint8_t GET_NS()
 {

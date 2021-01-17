@@ -19,11 +19,11 @@
 #define S_SREJ 0X03
 
 //CONTROL FIELD OF U FRAME
-#define U_SABM 0X3f
-#define U_DISC 0X53
-#define U_DM 0X1f
-#define U_UA 0X73
-#define U_TEST 0Xf3
+#define U_SABM 0X2f
+#define U_DISC 0X43
+#define U_DM 0X0f
+#define U_UA 0X63
+#define U_TEST 0Xe3
 
 #define I 0x04
 
