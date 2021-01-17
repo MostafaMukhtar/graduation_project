@@ -355,9 +355,10 @@ received_ax_25_frame[i]=arr[i];
 
 void deframing(uint8_t rx_frame[]){
 uint8_t NR=0,NS=0;
-uint8_t data[AX_25_DATA_FIELD_LEN];
+uint8_t DATA[AX_25_DATA_FIELD_LEN]; // DATA OF RECIVEIED I FRAME
 
 set_received_ax_25_frame(rx_frame);
+<<<<<<< HEAD
 if(check_crc()){/*valid crc*/
     if(Check_distnation()){/*valid destnation */
         if(Check_Source()){/*valid source*/
@@ -402,20 +403,65 @@ if(check_crc()){/*valid crc*/
                 case U_TEST: /* U_TEST_RESPONCE */ break;
 
                 }
+=======
+if(!check_crc()){/*invalid crc*/}
+if(!Check_distnation()){/*invalid destnation */}
+if(!Check_Source()){/*invalid source*/}
+switch(check_control_field()){
+case I: /*I response */
+    NR=GET_NR();    //GET NR OF THE RECIEVED I FRAM
+    NS=GET_NS();    //GET NS OF THE RECIEVED I FRAM
+    if(NR!=VS){/*INVALID NR*/}
+    if(NS!=VR){/*INVALID NS*/}
+    memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+    /*SSP-->DATA*/
+
+
+
+
+    break;
+
+case S_RR:/*RR_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
+case S_RNR:/*RNR_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
+case S_REJ:/*REJ_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+    break;
+case S_SREJ:/*SREJ_RESPONSE */
+    NR=GET_NR();
+    if(NR!=VS){/*INVALID NR*/}
+
+    break;
+
+case U_SABM: /* U_SABM_RESPONCE */ break;
+case U_DISC: /* U_DISC_RESPONCE */ break;
+case U_DM: /* U_DM_RESPONCE */ break;
+case U_UA: /* U_UA_RESPONCE */ break;
+case U_TEST: /* U_TEST_RESPONCE */ break;
+
+>>>>>>> 60c6a1becb43b78b13d3876b3d3fe495f4addbc5
 }
 }
 
 }
 }
 
-uint8_t GET_NS()
+uint8_t GET_NS()    //GET NR OF THE RECIEVED FRAM
 {
    return (received_ax_25_frame[15]&0x0E)>>1 ; //get NS from control field byte
 
 
 }
 
-uint8_t GET_NR()
+uint8_t GET_NR()    //GET NR OF THE RECIEVED FRAM
 {
    return (received_ax_25_frame[15]&0xE0)>>5 ; //get NR from control field byte
 
