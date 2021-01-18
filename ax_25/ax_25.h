@@ -19,11 +19,11 @@
 #define S_SREJ 0X03
 
 //CONTROL FIELD OF U FRAME
-#define U_SABM 0X3f
-#define U_DISC 0X53
-#define U_DM 0X1f
-#define U_UA 0X73
-#define U_TEST 0Xf3
+#define U_SABM 0X2f
+#define U_DISC 0X43
+#define U_DM 0X0f
+#define U_UA 0X63
+#define U_TEST 0Xe3
 
 #define I 0x04
 
@@ -50,11 +50,17 @@ void ax_25_make_S_U_frame(uint8_t type);
 void test();
 uint8_t ax_25_create_control_field(uint8_t type);
 
-
+// RECIVEING
 bool check_crc();
 bool Check_distnation();
 bool Check_Source();
 uint8_t check_control_field();
+void clear_256B(uint8_t *arr);
+void set_received_ax_25_frame(uint8_t arr[]);
+void deframing(uint8_t rx_frame[]); // DEFRAMING THE RECIEVED FRAM
+uint8_t GET_NS(); // GET NS FROM CONTROL FIELD BYTE
+uint8_t GET_NR(); // GET NR FROM CONTROL FIELD BYTE
+
 
 
 
