@@ -110,8 +110,19 @@ counter++;
 
 void ax_25_set_data_field_iframe(uint8_t *data){    /*set the data field in i frame*/
 
+/*int i=0;
+for(;i<AX_25_DATA_FIELD_LEN;i++)out[counter+i]=0;
+for(;i<AX_25_DATA_FIELD_LEN,i++)
+{
+    out[counter+i]=data[i];
+    if(data[i]==END_flag_spp && i>0) break; // check after the start flag
+}
+counter+=AX_25_DATA_FIELD_LEN; */
+
+
 memcpy(out+counter,data,AX_25_DATA_FIELD_LEN);
 counter+=AX_25_DATA_FIELD_LEN;
+
 }
 
 
