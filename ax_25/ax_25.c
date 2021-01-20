@@ -110,8 +110,19 @@ counter++;
 
 void ax_25_set_data_field_iframe(uint8_t *data){    /*set the data field in i frame*/
 
+/*int i=0;
+for(;i<AX_25_DATA_FIELD_LEN;i++)out[counter+i]=0;
+for(;i<AX_25_DATA_FIELD_LEN,i++)
+{
+    out[counter+i]=data[i];
+    if(data[i]==END_flag_spp && i>0) break; // check after the start flag
+}
+counter+=AX_25_DATA_FIELD_LEN; */
+
+
 memcpy(out+counter,data,AX_25_DATA_FIELD_LEN);
 counter+=AX_25_DATA_FIELD_LEN;
+
 }
 
 
@@ -178,11 +189,7 @@ window_pointer++;
 if(window_pointer>2) window_pointer=0; //if window_pointer>2
                                         //window_pointer=0
 
-i=0;
-for(;i<AX_25_FRAME_LEN;i++){
-   printf("%x ",tx_buff[0][i]);
 
-}
 
 
 }
@@ -217,6 +224,8 @@ for(;i<AX_25_FRAME_LEN;i++){
    printf("%x ",out[i]);
 
 }
+clear_256B(out);
+
 }
 
 
@@ -358,7 +367,7 @@ uint8_t NR=0,NS=0;
 uint8_t DATA[AX_25_DATA_FIELD_LEN]; // DATA OF RECIVEIED I FRAME
 
 set_received_ax_25_frame(rx_frame);
-<<<<<<< HEAD
+
 if(check_crc()){/*valid crc*/
     if(Check_distnation()){/*valid destnation */
         if(Check_Source()){/*valid source*/
@@ -368,7 +377,7 @@ if(check_crc()){/*valid crc*/
                     NS=GET_NS();
                     if(NR!=VS){/*INVALID NR*/}
                     if(NS!=VR){/*INVALID NS*/}
-                    memcpy(data,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+                    memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
                     /*SSP-->DATA*/
 
 
@@ -402,57 +411,15 @@ if(check_crc()){/*valid crc*/
                 case U_UA: /* U_UA_RESPONCE */ break;
                 case U_TEST: /* U_TEST_RESPONCE */ break;
 
-                }
-=======
-if(!check_crc()){/*invalid crc*/}
-if(!Check_distnation()){/*invalid destnation */}
-if(!Check_Source()){/*invalid source*/}
-switch(check_control_field()){
-case I: /*I response */
-    NR=GET_NR();    //GET NR OF THE RECIEVED I FRAM
-    NS=GET_NS();    //GET NS OF THE RECIEVED I FRAM
-    if(NR!=VS){/*INVALID NR*/}
-    if(NS!=VR){/*INVALID NS*/}
-    memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
-    /*SSP-->DATA*/
 
 
-
-
-    break;
-
-case S_RR:/*RR_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
-
-    break;
-case S_RNR:/*RNR_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
-
-    break;
-case S_REJ:/*REJ_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
-    break;
-case S_SREJ:/*SREJ_RESPONSE */
-    NR=GET_NR();
-    if(NR!=VS){/*INVALID NR*/}
-
-    break;
-
-case U_SABM: /* U_SABM_RESPONCE */ break;
-case U_DISC: /* U_DISC_RESPONCE */ break;
-case U_DM: /* U_DM_RESPONCE */ break;
-case U_UA: /* U_UA_RESPONCE */ break;
-case U_TEST: /* U_TEST_RESPONCE */ break;
-
->>>>>>> 60c6a1becb43b78b13d3876b3d3fe495f4addbc5
 }
 }
 
 }
 }
+}
+
 
 uint8_t GET_NS()    //GET NR OF THE RECIEVED FRAM
 {
