@@ -40,9 +40,9 @@ void ADC_init(void)
 
 	//select sample time
 	//adc->SMPR1 |= ((1<<0) |(1<<1)); //56 cycle
-	SET_BIT(adc->SMPR1,ADC_SMPR1_SMP10_0);
-	SET_BIT(adc->SMPR1,ADC_SMPR1_SMP10_1);
-	CLEAR_BIT(adc->SMPR1,ADC_SMPR1_SMP10_2);
+	SET_BIT(adc->SMPR2,ADC_SMPR1_SMP3_0);
+	SET_BIT(adc->SMPR2,ADC_SMPR1_SMP3_1);
+	CLEAR_BIT(adc->SMPR2,ADC_SMPR1_SMP3_2);
 
 
 }
