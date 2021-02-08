@@ -18,7 +18,9 @@
 #define TEL_1_Reading 0x56
 #define TEL_2_Reading 0x11
 #define ACK 0x89
-#define Comm_Ping 0x88
+//#define Comm_Ping 0x88
+#define FAILED 0x66
+#define NACK 0x59
 /*******************************************************************************
  *                                 Functions                                   *
  *******************************************************************************/
@@ -71,17 +73,17 @@ uint8_t Find_Type_of_Frame(uint8_t type);
  * */
 void GET_DATA(uint8_t type,uint8_t len);
 /*function name: Read_Sensor1
- *function arguments: int len
+ *function arguments: void
  *function return void
  *function description: read the first sensor
  * */
-void Read_Sensor1(int len);
+void Read_Sensor1();
 /*function name: Read_Sensor2
- *function arguments: int len
+ *function arguments: void
  *function return void
  *function description: read the second sensor
  * */
-void Read_Sensor2(int len);
+void Read_Sensor2();
 /*function name: Byte_Sttuffing
  *function arguments: uint8_t *p
  *function return void
