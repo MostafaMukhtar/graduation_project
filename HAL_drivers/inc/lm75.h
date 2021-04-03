@@ -1,16 +1,17 @@
 /*
- * lm75.h
+ * digital_temp_sensor.h
  *
  *  Created on: Feb 6, 2021
  *      Author: khlod
  */
 
-#ifndef HAL_DRIVERS_INC_LM75_H_
-#define HAL_DRIVERS_INC_LM75_H_
+#ifndef HAL_DRIVERS_INC_DIGITAL_TEMP_SENSOR_H_
+#define HAL_DRIVERS_INC_DIGITAL_TEMP_SENSOR_H_
+
+#include "stm32f4xx.h"
 
 
-
-#endif /* HAL_DRIVERS_INC_LM75_H_ */
+#define MY_ADDR					     0x61
 
 /* LM75 defines */
 #define LM75_ADDR                     0x90 // LM75 address
@@ -22,7 +23,7 @@
 #define LM75_REG_TOS                  0x03 // Overtemperature shutdown
 
 
-uint8_t LM75_Init(uint32_t SPI_Clock_Speed);
+void LM75_Init();
 
 void LM75_WriteReg(uint8_t reg, uint16_t value);
 uint16_t LM75_ReadReg(uint8_t reg);
@@ -31,3 +32,5 @@ void LM75_WriteConf(uint8_t value);
 
 void LM75_Shutdown(FunctionalState newstate);
 int16_t LM75_Temperature(void);
+
+#endif /* HAL_DRIVERS_INC_DIGITAL_TEMP_SENSOR_H_ */
