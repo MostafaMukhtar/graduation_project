@@ -19,8 +19,11 @@ RR_Frame,
 RNR_Frame,
 SREJ_Frame,
 REJ_Frame,
-I_frame,
+Rx_I_frame,
+Tx_I_frame,
 No_Event,
+LocalStart,
+LocalEnd,
 }SM_Event;
 
 extern State_dl next_state;

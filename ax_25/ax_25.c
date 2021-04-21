@@ -48,6 +48,11 @@ uint8_t SSID=0x00;                    /*The SSID is a four-bit integer that uniq
                                         multiple stations using the same amateur callsign.*/
 
 
+uint8_t SSP_Data[AX_25_DATA_FIELD_LEN];
+
+
+
+
 void ax_25_set_start_flage(){        /*set the start flag which is constant byte 01111110 ,7E hex*/
 *(tx_buffer+counter)=AX_25_FLAG;
 counter++;
@@ -122,7 +127,7 @@ counter++;
 }
 
 
-void ax_25_set_data_field_iframe(uint8_t *data,uint8_t len){    /*set the data field in i frame*/
+void ax_25_set_data_field_iframe(){    /*set the data field in i frame*/
 
 /*int i=0;
 for(;i<AX_25_DATA_FIELD_LEN;i++)out[counter+i]=0;
@@ -134,7 +139,7 @@ for(;i<AX_25_DATA_FIELD_LEN,i++)
 counter+=AX_25_DATA_FIELD_LEN; */
 
 
-memcpy(tx_buffer+counter,data,len);
+memcpy(tx_buffer+counter,SSP_Data,AX_25_DATA_FIELD_LEN);
 counter+=AX_25_DATA_FIELD_LEN;
 
 }
@@ -167,7 +172,7 @@ return crc;
 
 
 
-void ax_25_make_I_frame(uint8_t *arr_data,uint8_t len){            /*making I frame with data field equal to arr_data*/
+void ax_25_make_I_frame(){            /*making I frame with data field equal to arr_data*/
 clear_256B(tx_buffer);
 unsigned short crc;
 ax_25_set_start_flage();
@@ -175,7 +180,7 @@ ax_25_set_address_field(des_addr,source_addr,SSID);
 tx_buffer[counter]=ax_25_create_control_field(I);
 counter++;
 ax_25_set_pid_field(I);
-ax_25_set_data_field_iframe(arr_data,len);
+ax_25_set_data_field_iframe();
 crc=crc_cal(tx_buffer+1,AX_25_FRAME_LEN-4);
 tx_buffer[counter++]=(uint8_t)crc;
 tx_buffer[counter++]=(uint8_t)(crc>>8);
@@ -461,13 +466,14 @@ if(check_crc()){/*valid crc*/
                     ack_NR(NR);
 
 
+
                    // if(NR!=VS){/*INVALID NR*/}
 
                     break;
                 case S_SREJ:/*SREJ_RESPONSE */
                     NR=GET_NR();
                     ack_NR(NR);
-                    srej_condtion(NR);
+                    Srej_Condtion(NR);
 
 
                     //if(NR!=VS){/*INVALID NR*/}
@@ -503,6 +509,7 @@ uint8_t GET_NR()    //GET NR OF THE RECIEVED FRAM
 
 }
 
+
 void ack_NR(uint8_t nr){ /*nr=0--7   3*/
 if(nr<4){
   while(nr>0){
@@ -532,7 +539,7 @@ else{
 
 
 
-void rej_condtion(){
+void Rej_Condtion(){
     memcpy(tx_buffer,window_buff[window_pointer-rej_var],AX_25_FRAME_LEN);//vs=3 rv=3
     tx_buff_flag=1;
     rej_var--;
@@ -542,11 +549,7 @@ void rej_condtion(){
 
 
 
-
-
-
-
-void srej_condtion(uint8_t nr){
+void Srej_Condtion(uint8_t nr){
 if(nr<4){
 
     memcpy(tx_buffer,window_buff[nr],AX_25_FRAME_LEN);
@@ -562,23 +565,42 @@ else{
 }
 
 
-
-
-
-
-
-
 }
+
+
 void reset_parameter(){
 VS=0;
 VR=0;
 window_buff_flag=0;
 window_busy_slots=0x00;
 window_pointer=0;
+}
 
+void ClearWindow()
+{
+    window_buff_flag=0;
+    window_busy_slots=0x00;
+    window_pointer=0;
+}
 
+void SetRejectVariable(){
+    uint8_t NR;
+    NR=GET_NR();
+    rej_var=VS-NR; // number of retransmitted frames
+    rej_cond=1;
 
 }
+
+void Get_SSP_Data(uint8_t arr[],uint8_t len){ //SSP will call this function to st data
+    int i=0;
+    for(;i<AX_25_DATA_FIELD_LEN;i++)
+    {
+        SSP_Data[i]=0;
+    }
+    memcpy(SSP_Data,arr,len);
+
+}
+
 
 
 
