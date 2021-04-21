@@ -569,7 +569,16 @@ else{
 
 
 }
+void reset_parameter(){
+VS=0;
+VR=0;
+window_buff_flag=0;
+window_busy_slots=0x00;
+window_pointer=0;
 
+
+
+}
 
 
 

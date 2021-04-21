@@ -87,6 +87,6 @@ uint8_t GET_NS(); // GET NS FROM CONTROL FIELD BYTE
 uint8_t GET_NR(); // GET NR FROM CONTROL FIELD BYTE
 
 
-
+void reset_parameter(void);
 
 #endif // AX_25_H_INCLUDED
