@@ -1,15 +1,29 @@
 #include "ax_25.h"
 
-uint8_t out[AX_25_FRAME_LEN];       /*array which include the the output frame
-                                    of the framing process*/
+uint8_t tx_buffer[AX_25_FRAME_LEN];       /*array which include the the output frame
+                                            of the framing process*/
+uint8_t tx_buff_flag=0;
+
+uint8_t gs_busy=0;
+
+uint8_t rej_cond=0;
+uint8_t rej_var=0;
+
+uint8_t rx_rej_cond=0;
+
+
+
+
 
 
 uint8_t received_ax_25_frame[AX_25_FRAME_LEN];
+uint8_t rx_buff_flag=0;
 
 
-uint8_t tx_buff[3][AX_25_FRAME_LEN]; /* array of frames which used to hold the
+uint8_t window_buff[4][AX_25_FRAME_LEN]; /* array of frames which used to hold the
                                          tx_frames in case retransmission  */
-
+uint8_t window_buff_flag=0;
+uint8_t window_busy_slots=0x00;
 
 uint8_t counter=0;                   /*counter used to insert flags of ax_25
                                         in out array */
@@ -34,14 +48,19 @@ uint8_t SSID=0x00;                    /*The SSID is a four-bit integer that uniq
                                         multiple stations using the same amateur callsign.*/
 
 
+uint8_t SSP_Data[AX_25_DATA_FIELD_LEN];
+
+
+
+
 void ax_25_set_start_flage(){        /*set the start flag which is constant byte 01111110 ,7E hex*/
-*(out+counter)=AX_25_FLAG;
+*(tx_buffer+counter)=AX_25_FLAG;
 counter++;
 }
 
 
 void ax_25_set_end_flage(){          /*set the end flag which is constant byte 01111110 ,7E hex */
-*(out+counter)=AX_25_FLAG;
+*(tx_buffer+counter)=AX_25_FLAG;
 counter++;
 }
 
@@ -71,7 +90,7 @@ void ax_25_set_address_field(const uint8_t *des_addr,const uint8_t *source_addr,
         addr[i]=source_addr[i-7]<<1;}
         addr[i]=(SSID<<1)|0x61;
 
-memcpy(out+counter,addr,AX_25_ADDR_FIELD_LEN);
+memcpy(tx_buffer+counter,addr,AX_25_ADDR_FIELD_LEN);
 counter+=AX_25_ADDR_FIELD_LEN;
     }
 
@@ -103,12 +122,12 @@ uint8_t pid=0;
 if(type==I){
     pid=PID_FIELD;
     }
-out[counter]=pid;
+tx_buffer[counter]=pid;
 counter++;
 }
 
 
-void ax_25_set_data_field_iframe(uint8_t *data){    /*set the data field in i frame*/
+void ax_25_set_data_field_iframe(){    /*set the data field in i frame*/
 
 /*int i=0;
 for(;i<AX_25_DATA_FIELD_LEN;i++)out[counter+i]=0;
@@ -120,7 +139,7 @@ for(;i<AX_25_DATA_FIELD_LEN,i++)
 counter+=AX_25_DATA_FIELD_LEN; */
 
 
-memcpy(out+counter,data,AX_25_DATA_FIELD_LEN);
+memcpy(tx_buffer+counter,SSP_Data,AX_25_DATA_FIELD_LEN);
 counter+=AX_25_DATA_FIELD_LEN;
 
 }
@@ -128,7 +147,7 @@ counter+=AX_25_DATA_FIELD_LEN;
 
 void ax_25_set_data_field_s_uframe(){        /*set the data field in s,u frame to zeros*/
 int i=0;
-for(;i<AX_25_DATA_FIELD_LEN;i++)out[counter+i]=0;
+for(;i<AX_25_DATA_FIELD_LEN;i++)tx_buffer[counter+i]=0;
 counter+=AX_25_DATA_FIELD_LEN;
 }
 
@@ -153,17 +172,18 @@ return crc;
 
 
 
-void ax_25_make_I_frame(uint8_t *arr_data){            /*making I frame with data field equal to arr_data*/
+void ax_25_make_I_frame(){            /*making I frame with data field equal to arr_data*/
+clear_256B(tx_buffer);
 unsigned short crc;
 ax_25_set_start_flage();
 ax_25_set_address_field(des_addr,source_addr,SSID);
-out[counter]=ax_25_create_control_field(I);
+tx_buffer[counter]=ax_25_create_control_field(I);
 counter++;
 ax_25_set_pid_field(I);
-ax_25_set_data_field_iframe(arr_data);
-crc=crc_cal(out+1,AX_25_FRAME_LEN-4);
-out[counter++]=(uint8_t)crc;
-out[counter++]=(uint8_t)(crc>>8);
+ax_25_set_data_field_iframe();
+crc=crc_cal(tx_buffer+1,AX_25_FRAME_LEN-4);
+tx_buffer[counter++]=(uint8_t)crc;
+tx_buffer[counter++]=(uint8_t)(crc>>8);
 ax_25_set_end_flage();
 
 
@@ -172,23 +192,34 @@ ax_25_set_end_flage();
 
 //trans
 VS=VS+1;
+if(VS>7)VS=0;
 //window_pointer=0
-memcpy(tx_buff[window_pointer],out,AX_25_FRAME_LEN);
+memcpy(window_buff[window_pointer],tx_buffer,AX_25_FRAME_LEN);
 //tx_buff[window_pointer]=out
 //out=0
 
 int i=0;
 
 for(;i<AX_25_FRAME_LEN;i++){
-   printf("%x ",out[i]);
+   printf("%x ",tx_buffer[i]);
 
 }
-clear_256B(out);//clear out
-//window_pointer++;
-window_pointer++;
-if(window_pointer>2) window_pointer=0; //if window_pointer>2
-                                        //window_pointer=0
 
+//clear_256B(tx_buffer);//clear out
+//window_pointer++;
+
+
+window_busy_slots=window_busy_slots|(1<<window_pointer);  // 0000 0001 << 3 = 0000 1000 | 0000 0111 =0000 1111
+
+window_pointer++;
+
+if(window_busy_slots==0x0f) window_buff_flag=1;
+if(window_pointer>3) window_pointer=0;
+
+
+ //if window_pointer>2
+                                        //window_pointer=0
+tx_buff_flag=1;
 
 
 
@@ -206,25 +237,29 @@ for(;i<256;i++){
 
 
 void ax_25_make_S_U_frame(uint8_t type){        /*making s_u frames depending on the type value*/
+clear_256B(tx_buffer);
 unsigned short crc;
 ax_25_set_start_flage();
 ax_25_set_address_field(des_addr,source_addr,SSID);
-out[counter]=ax_25_create_control_field(type);
+tx_buffer[counter]=ax_25_create_control_field(type);
 counter++;
 ax_25_set_pid_field(type);
 ax_25_set_data_field_s_uframe();
-crc=crc_cal(out+1,AX_25_FRAME_LEN-4);
-out[counter++]=(uint8_t)crc;
-out[counter++]=(uint8_t)(crc>>8);
+crc=crc_cal(tx_buffer+1,AX_25_FRAME_LEN-4);
+tx_buffer[counter++]=(uint8_t)crc;
+tx_buffer[counter++]=(uint8_t)(crc>>8);
 ax_25_set_end_flage();
+
+tx_buff_flag=1;
 
 int i=0;
 
 for(;i<AX_25_FRAME_LEN;i++){
-   printf("%x ",out[i]);
+   printf("%x ",tx_buffer[i]);
 
 }
-clear_256B(out);
+
+//clear_256B(tx_buffer);
 
 }
 
@@ -240,7 +275,7 @@ clear_256B(out);
 
 /***********receiving************/
 
-bool check_crc(){
+uint8_t check_crc(){
 unsigned short crc;
 uint8_t crc0,crc1;
 crc=crc_cal(received_ax_25_frame+1,AX_25_FRAME_LEN-4);
@@ -248,50 +283,50 @@ crc0=(uint8_t)crc;
 crc1=(uint8_t)(crc>>8);
 
 if(crc0==received_ax_25_frame[253]&& crc1==received_ax_25_frame[254]){
-    return true;
+    return 1;
 
 }
 else{
 
-    return false;
+    return 0;
 }
 
 }
 
-bool Check_distnation(){
+uint8_t Check_distnation(){
     int i=1;
     for(;i<7;i++)
     {
     if(des_addr[i-1]!=(received_ax_25_frame[i]>>1))
     {
-        return false ;
+        return 0 ;
     }
     }
 
     if(received_ax_25_frame[7]!=0x60){
 
-        return false ;
+        return 0 ;
     }
 
-    return true ;
+    return 1 ;
 }
 
-bool Check_Source(){
+uint8_t Check_Source(){
     int i=8;
     for(;i<15;i++)
     {
     if(source_addr[i-8]!=(received_ax_25_frame[i]>>1))
     {
-        return false;
+        return 0;
     }
     }
 
     if(received_ax_25_frame[14]!=0x61){
 
-        return false;
+        return 0;
     }
 
-    return true;
+    return 1;
 }
 
 
@@ -351,7 +386,7 @@ return 0;
 }
 
 
-
+/*
 void set_received_ax_25_frame(uint8_t arr[]){
 int i=0;
 for(;i<AX_25_FRAME_LEN;i++){
@@ -360,13 +395,13 @@ received_ax_25_frame[i]=arr[i];
 
 }
 
-
+*/
 
 void deframing(uint8_t rx_frame[]){
 uint8_t NR=0,NS=0;
 uint8_t DATA[AX_25_DATA_FIELD_LEN]; // DATA OF RECIVEIED I FRAME
 
-set_received_ax_25_frame(rx_frame);
+//set_received_ax_25_frame(rx_frame);
 
 if(check_crc()){/*valid crc*/
     if(Check_distnation()){/*valid destnation */
@@ -375,9 +410,34 @@ if(check_crc()){/*valid crc*/
                 case I: /*I response */
                     NR=GET_NR();
                     NS=GET_NS();
-                    if(NR!=VS){/*INVALID NR*/}
-                    if(NS!=VR){/*INVALID NS*/}
+                    ack_NR(NR);
+
+                   if(VR!=NS){
+                    if((NS-VR)>1){
+                        ax_25_make_S_U_frame(S_REJ);
+                        rx_rej_cond=1;
+
+                    }
+                    else{
+                        if(rx_rej_cond==0){
+                           ax_25_make_S_U_frame(S_SREJ);
+
+                        }
+
+                        }
+
+
+
+                   }
+                   // if(NR!=VS){/*INVALID NR*/}
+                    else{
+                    if(rx_rej_cond==1)rx_rej_cond=0;
                     memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+                    VR=VR+1;
+                    if(VR>7)VR=0;
+
+                    }
+
                     /*SSP-->DATA*/
 
 
@@ -386,22 +446,37 @@ if(check_crc()){/*valid crc*/
                     break;
 
                 case S_RR:/*RR_RESPONSE */
+                    gs_busy=0;
                     NR=GET_NR();
+                    ack_NR(NR);
                     if(NR!=VS){/*INVALID NR*/}
 
                     break;
                 case S_RNR:/*RNR_RESPONSE */
+                    gs_busy=1;
                     NR=GET_NR();
+                    ack_NR(NR);
                     if(NR!=VS){/*INVALID NR*/}
 
                     break;
                 case S_REJ:/*REJ_RESPONSE */
+                    rej_cond=1;
                     NR=GET_NR();
-                    if(NR!=VS){/*INVALID NR*/}
+                    rej_var=VS-NR;//3-0=3
+                    ack_NR(NR);
+
+
+
+                   // if(NR!=VS){/*INVALID NR*/}
+
                     break;
                 case S_SREJ:/*SREJ_RESPONSE */
                     NR=GET_NR();
-                    if(NR!=VS){/*INVALID NR*/}
+                    ack_NR(NR);
+                    Srej_Condtion(NR);
+
+
+                    //if(NR!=VS){/*INVALID NR*/}
 
                     break;
 
@@ -435,8 +510,96 @@ uint8_t GET_NR()    //GET NR OF THE RECIEVED FRAM
 }
 
 
+void ack_NR(uint8_t nr){ /*nr=0--7   3*/
+if(nr<4){
+  while(nr>0){
+    nr--;
+    window_busy_slots=window_busy_slots&~(1<<nr);// 0000 0001 & 1111 1110 = 0000 0000
 
 
+
+  }
+
+
+}
+else{
+        nr=nr-4;
+      while(nr>0){
+    nr--;
+    window_busy_slots=window_busy_slots&~(1<<nr);
+
+
+
+  }
+
+
+}
+
+}
+
+
+
+void Rej_Condtion(){
+    memcpy(tx_buffer,window_buff[window_pointer-rej_var],AX_25_FRAME_LEN);//vs=3 rv=3
+    tx_buff_flag=1;
+    rej_var--;
+    if(rej_var==0)rej_cond=0;
+}
+
+
+
+
+void Srej_Condtion(uint8_t nr){
+if(nr<4){
+
+    memcpy(tx_buffer,window_buff[nr],AX_25_FRAME_LEN);
+    tx_buff_flag=1;
+}
+else{
+    nr=nr-4;
+    memcpy(tx_buffer,window_buff[nr],AX_25_FRAME_LEN);
+    tx_buff_flag=1;
+
+
+
+}
+
+
+}
+
+
+void reset_parameter(){
+VS=0;
+VR=0;
+window_buff_flag=0;
+window_busy_slots=0x00;
+window_pointer=0;
+}
+
+void ClearWindow()
+{
+    window_buff_flag=0;
+    window_busy_slots=0x00;
+    window_pointer=0;
+}
+
+void SetRejectVariable(){
+    uint8_t NR;
+    NR=GET_NR();
+    rej_var=VS-NR; // number of retransmitted frames
+    rej_cond=1;
+
+}
+
+void Get_SSP_Data(uint8_t arr[],uint8_t len){ //SSP will call this function to st data
+    int i=0;
+    for(;i<AX_25_DATA_FIELD_LEN;i++)
+    {
+        SSP_Data[i]=0;
+    }
+    memcpy(SSP_Data,arr,len);
+
+}
 
 
 

@@ -34,6 +34,32 @@
 
 
 
+extern uint8_t tx_buffer[AX_25_FRAME_LEN];       /*array which include the the output frame
+                                            of the framing process*/
+extern uint8_t tx_buff_flag;
+
+
+
+extern uint8_t received_ax_25_frame[AX_25_FRAME_LEN];
+
+
+extern uint8_t window_buff[4][AX_25_FRAME_LEN]; /* array of frames which used to hold the
+                                         tx_frames in case retransmission  */
+extern uint8_t windwo_buff_flag;
+
+extern uint8_t rej_var;
+extern uint8_t gs_busy;
+extern uint8_t rej_cond;
+
+
+
+
+
+
+
+
+
+
 void ax_25_set_start_flage();
 
 void ax_25_set_address_field(const uint8_t *des_addr,const uint8_t *source_addr,uint8_t SSID);
@@ -41,19 +67,19 @@ void ax_25_set_address_field(const uint8_t *des_addr,const uint8_t *source_addr,
 uint8_t ax_25_create_control_field(uint8_t type);
 
 void ax_25_set_pid_field(uint8_t type);
-void ax_25_set_data_field_iframe(uint8_t *data);
+void ax_25_set_data_field_iframe();
 void ax_25_set_data_field_s_uframe();
 unsigned short crc_cal(unsigned char *data, int length1);
 void ax_25_set_end_flage();
-void ax_25_make_I_frame(uint8_t *arr_data);
+void ax_25_make_I_frame();
 void ax_25_make_S_U_frame(uint8_t type);
 void test();
 uint8_t ax_25_create_control_field(uint8_t type);
 
 // RECIVEING
-bool check_crc();
-bool Check_distnation();
-bool Check_Source();
+uint8_t check_crc();
+uint8_t Check_distnation();
+uint8_t Check_Source();
 uint8_t check_control_field();
 void clear_256B(uint8_t *arr);
 void set_received_ax_25_frame(uint8_t arr[]);
@@ -62,6 +88,12 @@ uint8_t GET_NS(); // GET NS FROM CONTROL FIELD BYTE
 uint8_t GET_NR(); // GET NR FROM CONTROL FIELD BYTE
 
 
-
+/* **************************************************** */
+void Rej_Condtion();
+void Srej_Condtion(uint8_t nr);
+void reset_parameter(void);
+void ClearWindow();
+void SetRejectVariable();
+void Get_SSP_Data(uint8_t arr[],uint8_t len);
 
 #endif // AX_25_H_INCLUDED
