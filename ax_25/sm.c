@@ -171,24 +171,35 @@ void Connected_event_handler(SM_Event e){
             ax_25_make_I_frame();
             next_state= Connected;
             break;
-    }
 
+        case Rx_I_frame:
+             ack_NR(GET_NR());
+             if(Rx_com_busy==1)
+             {
+                 ax_25_make_S_U_frame(S_RNR);
+                 next_state =Connected;
+             }
 
+            else{
 
+             if(VR!=NS){
+                    if((NS-VR)>1){
+                        ax_25_make_S_U_frame(S_REJ);
+                        rx_rej_cond=1;
 
+                    }
+                    else{
+                        if(rx_rej_cond==0){
+                           ax_25_make_S_U_frame(S_SREJ);
 
+                        }
 
+                        }
 
+                   }
+                }
 
-
-
-
-
-
-
-
-
-
+            }
 
 }
 

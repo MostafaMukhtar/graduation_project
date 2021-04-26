@@ -11,7 +11,7 @@ uint8_t rej_var=0;
 
 uint8_t rx_rej_cond=0;
 
-
+uint8_t Rx_com_busy=0;
 
 
 
@@ -426,8 +426,6 @@ if(check_crc()){/*valid crc*/
 
                         }
 
-
-
                    }
                    // if(NR!=VS){/*INVALID NR*/}
                     else{
@@ -439,10 +437,6 @@ if(check_crc()){/*valid crc*/
                     }
 
                     /*SSP-->DATA*/
-
-
-
-
                     break;
 
                 case S_RR:/*RR_RESPONSE */

@@ -50,7 +50,7 @@ extern uint8_t windwo_buff_flag;
 extern uint8_t rej_var;
 extern uint8_t gs_busy;
 extern uint8_t rej_cond;
-
+extern uint8_t Rx_com_busy;
 
 
 
