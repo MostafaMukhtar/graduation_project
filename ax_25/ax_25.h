@@ -2,6 +2,9 @@
 #define AX_25_H_INCLUDED
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include"sm.h"
 
 #define AX_25_FRAME_LEN 256
 #define AX_25_DATA_FIELD_LEN 236
@@ -95,5 +98,8 @@ void reset_parameter(void);
 void ClearWindow();
 void SetRejectVariable();
 void Get_SSP_Data(uint8_t arr[],uint8_t len);
+uint8_t Get_VR();
+void Extract_I_data();
+void ack_NR(uint8_t nr);
 
 #endif // AX_25_H_INCLUDED

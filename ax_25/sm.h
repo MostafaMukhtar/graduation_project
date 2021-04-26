@@ -28,12 +28,13 @@ LocalEnd,
 
 extern State_dl next_state;
 extern State_dl current_state;
+extern SM_Event Event_Triggered;
 
 
-void Disconnected_event_handler(SM_Event e);
-void Connected_event_handler(SM_Event e);
-void WaitingConnection_event_handler(SM_Event e);
-void WaitingRelease_event_handler(SM_Event e);
+void Disconnected_event_handler();
+void Connected_event_handler();
+void WaitingConnection_event_handler();
+void WaitingRelease_event_handler();
 void state_transition();
 
 

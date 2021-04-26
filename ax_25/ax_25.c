@@ -1,5 +1,6 @@
 #include "ax_25.h"
 
+
 uint8_t tx_buffer[AX_25_FRAME_LEN];       /*array which include the the output frame
                                             of the framing process*/
 uint8_t tx_buff_flag=0;
@@ -398,8 +399,8 @@ received_ax_25_frame[i]=arr[i];
 */
 
 void deframing(uint8_t rx_frame[]){
-uint8_t NR=0,NS=0;
-uint8_t DATA[AX_25_DATA_FIELD_LEN]; // DATA OF RECIVEIED I FRAME
+
+ // DATA OF RECIVEIED I FRAME
 
 //set_received_ax_25_frame(rx_frame);
 
@@ -408,56 +409,21 @@ if(check_crc()){/*valid crc*/
         if(Check_Source()){/*valid source*/
             switch(check_control_field()){
                 case I: /*I response */
-                    NR=GET_NR();
-                    NS=GET_NS();
-                    ack_NR(NR);
-
-                   if(VR!=NS){
-                    if((NS-VR)>1){
-                        ax_25_make_S_U_frame(S_REJ);
-                        rx_rej_cond=1;
-
-                    }
-                    else{
-                        if(rx_rej_cond==0){
-                           ax_25_make_S_U_frame(S_SREJ);
-
-                        }
-
-                        }
-
-                   }
-                   // if(NR!=VS){/*INVALID NR*/}
-                    else{
-                    if(rx_rej_cond==1)rx_rej_cond=0;
-                    memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
-                    VR=VR+1;
-                    if(VR>7)VR=0;
-
-                    }
+                Event_Triggered=Rx_I_frame;
 
                     /*SSP-->DATA*/
                     break;
 
                 case S_RR:/*RR_RESPONSE */
-                    gs_busy=0;
-                    NR=GET_NR();
-                    ack_NR(NR);
-                    if(NR!=VS){/*INVALID NR*/}
+                    Event_Triggered=RR_Frame;
 
                     break;
                 case S_RNR:/*RNR_RESPONSE */
-                    gs_busy=1;
-                    NR=GET_NR();
-                    ack_NR(NR);
-                    if(NR!=VS){/*INVALID NR*/}
+                Event_Triggered=RNR_Frame;
 
                     break;
                 case S_REJ:/*REJ_RESPONSE */
-                    rej_cond=1;
-                    NR=GET_NR();
-                    rej_var=VS-NR;//3-0=3
-                    ack_NR(NR);
+                    Event_Triggered=REJ_Frame;
 
 
 
@@ -465,20 +431,26 @@ if(check_crc()){/*valid crc*/
 
                     break;
                 case S_SREJ:/*SREJ_RESPONSE */
-                    NR=GET_NR();
-                    ack_NR(NR);
-                    Srej_Condtion(NR);
+                        Event_Triggered=SREJ_Frame;
 
 
                     //if(NR!=VS){/*INVALID NR*/}
 
                     break;
 
-                case U_SABM: /* U_SABM_RESPONCE */ break;
-                case U_DISC: /* U_DISC_RESPONCE */ break;
-                case U_DM: /* U_DM_RESPONCE */ break;
-                case U_UA: /* U_UA_RESPONCE */ break;
-                case U_TEST: /* U_TEST_RESPONCE */ break;
+                case U_SABM:
+                    Event_Triggered=SABM_Frame;
+                     /* U_SABM_RESPONCE */ break;
+                case U_DISC:
+                    Event_Triggered=DISC_Frame;
+                    /* U_DISC_RESPONCE */ break;
+                case U_DM:
+                    Event_Triggered=DM_Frame;
+                    /* U_DM_RESPONCE */ break;
+                case U_UA:
+                    Event_Triggered=UA_Frame;
+                    /* U_UA_RESPONCE */ break;
+               default:break;
 
 
 
@@ -595,7 +567,15 @@ void Get_SSP_Data(uint8_t arr[],uint8_t len){ //SSP will call this function to s
 
 }
 
+uint8_t Get_VR(){
+return VR;
 
-
+}
+void Extract_I_data(){
+uint8_t DATA[AX_25_DATA_FIELD_LEN];
+memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+VR=VR+1;
+if(VR>7)VR=0;
+}
 
 

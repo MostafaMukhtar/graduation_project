@@ -2,10 +2,11 @@
 #include"ax_25.h"
 State_dl current_state=Disconnected;
 State_dl next_state=Disconnected;
+SM_Event Event_Triggered=No_Event;
 
 
-void Disconnected_event_handler(SM_Event e){
-switch(e){
+void Disconnected_event_handler(){
+switch(Event_Triggered){
 
 case UA_Frame:
     next_state=Disconnected;
@@ -44,13 +45,15 @@ default:
     break;
 
 }
+Event_Triggered=No_Event;
+state_transition();
 }
 
 
 
-void WaitingConnection_event_handler(SM_Event e){
+void WaitingConnection_event_handler(){
 
-    switch (e)
+    switch (Event_Triggered)
     {
     case UA_Frame:
         reset_parameter();
@@ -77,13 +80,15 @@ void WaitingConnection_event_handler(SM_Event e){
         break;
 
     }
+Event_Triggered=No_Event;
+state_transition();
 }
 
 
 
-void WaitingRelease_event_handler(SM_Event e){
+void WaitingRelease_event_handler(){
 
-    switch(e){
+    switch(Event_Triggered){
 
     case SABM_Frame:
         ax_25_make_S_U_frame(U_DM);
@@ -106,12 +111,14 @@ void WaitingRelease_event_handler(SM_Event e){
     break;
 
     }
+Event_Triggered=No_Event;
+state_transition();
 }
 
 
-void Connected_event_handler(SM_Event e){
+void Connected_event_handler(){
 
-    switch(e)
+    switch(Event_Triggered)
     {
         case UA_Frame:
         next_state=Connected;
@@ -182,25 +189,40 @@ void Connected_event_handler(SM_Event e){
 
             else{
 
-             if(VR!=NS){
-                    if((NS-VR)>1){
+             if(Get_VR()!=GET_NS()){
+                    if((GET_NS()-Get_VR())>1){
                         ax_25_make_S_U_frame(S_REJ);
-                        rx_rej_cond=1;
-
-                    }
+                        //rx_rej_cond=1;
+                         next_state =Connected;
+                         }
                     else{
-                        if(rx_rej_cond==0){
+                       /* if(rx_rej_cond==0){
                            ax_25_make_S_U_frame(S_SREJ);
 
+                        }*/
+
+                         ax_25_make_S_U_frame(S_SREJ);
+                        next_state =Connected;
                         }
 
-                        }
+
+
+
+                   }
+                   else{
+                        Extract_I_data();
+                        next_state =Connected;
 
                    }
                 }
 
+        case No_Event:break;
+        default :break;
+
             }
 
+Event_Triggered=No_Event;
+state_transition();
 }
 
 
