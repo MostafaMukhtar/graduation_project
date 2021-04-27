@@ -205,9 +205,6 @@ void Connected_event_handler(){
                         next_state =Connected;
                         }
 
-
-
-
                    }
                    else{
                         Extract_I_data();

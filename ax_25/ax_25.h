@@ -40,7 +40,7 @@
 extern uint8_t tx_buffer[AX_25_FRAME_LEN];       /*array which include the the output frame
                                             of the framing process*/
 extern uint8_t tx_buff_flag;
-
+extern uint8_t rx_buff_flag;
 
 
 extern uint8_t received_ax_25_frame[AX_25_FRAME_LEN];
