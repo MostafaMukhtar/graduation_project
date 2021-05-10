@@ -19,9 +19,11 @@ Idle_event,
 }PH_Event;
 
 
-
-
-
+PH_State_Transition();
+PH_Event Get_PH_Evnet();
+void Transmitting_Event_handler();
+void Receving_Event_handler();
+void Idle_Event_handler();
 
 
 

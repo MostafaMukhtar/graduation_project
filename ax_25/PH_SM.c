@@ -3,8 +3,8 @@
 
 
 PH_Event PH_Event_Trig= Idle_event;
-PH_State PH_Current_State =Idle;
-PH_State PH_Next_State = Idle;
+PH_State PH_Current_State =PH_Idle;
+PH_State PH_Next_State = PH_Idle;
 
 
 
