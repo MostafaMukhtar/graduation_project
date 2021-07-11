@@ -42,10 +42,11 @@ extern uint8_t tx_frame[AX_25_FRAME_LEN];
 extern uint8_t received_ax_25_frame[AX_25_FRAME_LEN];
 extern uint8_t rej_cond,tx_buf_size;
 extern uint8_t tx_buf[3][AX_25_FRAME_LEN];
-
+extern uint8_t backup,sr;
+extern uint8_t VS,VR;
 extern uint8_t rx_buf_pointer;
 extern uint8_t rx_buf_size;
-extern uint8_t rx_buf_busy;
+extern uint8_t rx_buf_busy,BACKUP[AX_25_DATA_FIELD_LEN];
 
 
 

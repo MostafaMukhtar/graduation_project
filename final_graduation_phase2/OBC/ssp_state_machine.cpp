@@ -9,6 +9,7 @@ uint8_t time_out = 0;
 
 
 
+
 void Get_Event(uint8_t type){
     switch(type){
     case INIT:
@@ -18,12 +19,15 @@ void Get_Event(uint8_t type){
         event_triggered = Ping_Event;
         break;
      case GET_TEL_1:
+     T=1;
      event_triggered = Get_Tel1_Event;
      break;   
      case GET_PACKET_2:
+     T=1;
      event_triggered = Get_Packet2_Event;
      break;  
      case GET_PACKET_3:
+     T=1;
      event_triggered = Get_Packet3_Event;
      break;   
 

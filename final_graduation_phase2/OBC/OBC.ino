@@ -21,8 +21,8 @@ void setup() {
 }
 
 void loop() {
-TEST1();
-/*if(Serial.available()){
+//TEST1();
+if(Serial.available()){
   
   switch(Serial.read()){    
     case '1':
@@ -47,7 +47,7 @@ TEST1();
   
   
   }
-*/
+
 
 switch(current_state){
     case Disconnected:

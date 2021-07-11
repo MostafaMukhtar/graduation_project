@@ -171,7 +171,7 @@ void Connected_event_handler(){
             break;
 
         case Rx_I_frame:
-            ack_NR(GET_NR());
+            
             if(rx_buf_busy==1)
              {
                  ax_25_make_S_U_frame(S_RNR);
@@ -201,7 +201,7 @@ void Connected_event_handler(){
 
                    }
                    else{
-                     
+                       ack_NR(GET_NR());
                         Extract_I_data();
                         next_state =Connected;
 

@@ -155,7 +155,6 @@ void ax_25_make_I_frame(void){
     VS=VS+1;
     if(VS>7)VS=0;
 
-
     
     s=s+1;
     if(s>2)s=0;
@@ -361,6 +360,7 @@ void ack_NR(uint8_t nr){//edited
 }
 
 void Rej_Condtion(uint8_t nr){
+   if(nr>3)nr=nr-4;
     nr_rej=nr;
     rej_cond=1;
    rej_count=tx_buf_size;
@@ -369,7 +369,7 @@ void Rej_Condtion(uint8_t nr){
 }
 
 void Srej_Condtion(uint8_t nr){//edit
- VS--;
+ //VS--;
   if(nr<=3){
     memcpy(tx_frame,tx_buf[nr],AX_25_FRAME_LEN);
     tx_buffer_flag=1;}
@@ -410,7 +410,8 @@ void Extract_I_data(void){
     uint8_t DATA[AX_25_DATA_FIELD_LEN];
     memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
     VR=VR+1;
-    if(VR>7)VR=0;    
+    if(VR>7)VR=0; 
+  
     deframing_ssp(DATA);
 
 

@@ -208,13 +208,13 @@ default:break;
    Serial.print("  Type: ");
   switch(frame[3]){
 case GET_TEL_1:Serial.println("GET_TEL_1");break;
-case GET_PACKET_2:Serial.println("GET_PACKET_2");break;
-case GET_PACKET_3:Serial.println("GET_PACKET_3");break;
+case GET_PACKET_2:Serial.println("GET_TEL_2");break;
+case GET_PACKET_3:Serial.println("GET_TEL_3");break;
 case INIT:Serial.println("INIT");break;
 case PING_:Serial.println("PING");break;
 case TEL_1_RESPONSE:Serial.println("TEL_1_RESPONSE");break;
-case PACKET_2_RESPONSE:Serial.println("PACKET_2_RESPONSE");break;
-case PACKET_3_RESPONSE:Serial.println("PACKET_3_RESPONSE");break;
+case PACKET_2_RESPONSE:Serial.println("TEL_2_RESPONSE");break;
+case PACKET_3_RESPONSE:Serial.println("TEL_3_RESPONSE");break;
 case ACK:Serial.println("ACK");break;
 case NACK:Serial.println("NACK");break;
 case DISREQ:Serial.println("DISREQ");break;
@@ -250,18 +250,21 @@ Serial.println("");
      Serial.print("   Sensor4_Temp: ");
  Serial.println(frame[10]);
 
-      Serial.print("   OBC_State: ");
-  switch(frame[11]){
+      Serial.print(" OBC_State: ");
+ switch(frame[11]){
   case 14:Serial.println("Stable");break;
-  case 13:Serial.println("Connection Error");break;
-  case 12:Serial.println("Not Stable"); break;
+  case 13:Serial.println("Connection Failed");break;
+  case 12:Serial.println("Connection Error"); break;
+  case 15:Serial.println("Not Stable"); break;
   
   }
-       Serial.print("   GND_State: ");
+ 
+       Serial.print(" GND_State: ");
  switch(frame[12]){
   case 14:Serial.println("Stable");break;
-  case 13:Serial.println("Connection Error");break;
-  case 12:Serial.println("Not Stable"); break;
+  case 13:Serial.println("Connection Failed");break;
+  case 12:Serial.println("Connection Error"); break;
+  case 15:Serial.println("Not Stable"); break;
   
   }
         Serial.print("   Satlite_Mode: ");
@@ -290,13 +293,13 @@ Serial.println("OBC_Login packet");
   if(frame[7+i]==0x99){break;}
   switch(frame[7+i]){
 case GET_TEL_1:Serial.print("GET_TEL_1 ");break;
-case GET_PACKET_2:Serial.print("GET_PACKET_2 ");break;
-case GET_PACKET_3:Serial.print("GET_PACKET_3 ");break;
+case GET_PACKET_2:Serial.print("GET_TEL_2 ");break;
+case GET_PACKET_3:Serial.print("GET_TEL_3 ");break;
 case INIT:Serial.print("INIT ");break;
 case PING_:Serial.print("PING ");break;
 case TEL_1_RESPONSE:Serial.print("TEL_1_RESPONSE ");break;
-case PACKET_2_RESPONSE:Serial.print("PACKET_2_RESPONSE ");break;
-case PACKET_3_RESPONSE:Serial.print("PACKET_3_RESPONSE ");break;
+case PACKET_2_RESPONSE:Serial.print("TEL_2_RESPONSE ");break;
+case PACKET_3_RESPONSE:Serial.print("TEL_3_RESPONSE ");break;
 case ACK:Serial.print("ACK ");break;
 case NACK:Serial.print("NACK ");break;
 case DISREQ:Serial.print("DISREQ ");break;
@@ -327,13 +330,13 @@ Serial.println("");
    if(frame[7+i]==0x99){break;}
   switch(frame[7+i]){
 case GET_TEL_1:Serial.print("GET_TEL_1 ");break;
-case GET_PACKET_2:Serial.print("GET_PACKET_2 ");break;
-case GET_PACKET_3:Serial.print("GET_PACKET_3 ");break;
+case GET_PACKET_2:Serial.print("GET_TEL_2 ");break;
+case GET_PACKET_3:Serial.print("GET_TEL_3 ");break;
 case INIT:Serial.print("INIT ");break;
 case PING_:Serial.print("PING ");break;
 case TEL_1_RESPONSE:Serial.print("TEL_1_RESPONSE ");break;
-case PACKET_2_RESPONSE:Serial.print("PACKET_2_RESPONSE ");break;
-case PACKET_3_RESPONSE:Serial.print("PACKET_3_RESPONSE ");break;
+case PACKET_2_RESPONSE:Serial.print("TEL_2_RESPONSE ");break;
+case PACKET_3_RESPONSE:Serial.print("TEL_3_RESPONSE ");break;
 case ACK:Serial.print("ACK ");break;
 case NACK:Serial.print("NACK ");break;
 case DISREQ:Serial.print("DISREQ ");break;

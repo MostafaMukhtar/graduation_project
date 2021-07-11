@@ -4,7 +4,7 @@
 
 unsigned int counter1=0;
 uint8_t c=0;
-
+uint8_t p=0;
 
 State_ph current_Phstate=idle;
 State_ph next_Phstate=idle;
@@ -39,8 +39,11 @@ void transmiting_event_handler(){//edit
  //tx_buffer_flag=0;
 //  if(MO!=0)return;
    if(rej_count!=0){
-
-        memcpy(tx_frame,tx_buf[nr_rej+c],AX_25_FRAME_LEN);
+        p=nr_rej+c;
+        if(p>3)p=p-4;
+        
+        
+        memcpy(tx_frame,tx_buf[p],AX_25_FRAME_LEN);
         dis_ax(tx_frame,1);
            int i =0;
         for(;i<AX_25_FRAME_LEN;i++){

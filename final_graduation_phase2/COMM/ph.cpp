@@ -51,7 +51,19 @@ void transmiting_event_handler(){
         PhEvent_Triggered=No_phEvent;
         next_Phstate=idle;
         phstate_transition();
-}
+
+
+if(sr==1){
+  delay(500);
+ 
+     deframing_ssp(BACKUP);
+     VR=VR+1;
+    if(VR>7)VR=0;
+    sr=0;
+    }
+  
+  }
+
 
 
 void idle_event_handler(){

@@ -10,6 +10,7 @@ uint8_t crc0,crc1;
 uint8_t tel1[10];
 uint8_t tel2[23];
 uint8_t tel3[23];
+uint8_t T=0;
 void deframing_ssp (uint8_t frame[]){
     length0 = 0;
     zeros_arr(ptr);
@@ -95,21 +96,26 @@ void Packet_Analysis(uint8_t *p){
           switch(p[3]){
             
             case TEL_1_RESPONSE:
-           
+          if(T==1){ 
            memcpy(tel1,&p[4],10);
             Generate_Response(TEL_1_RESPONSE,GND);
-             
+         T=0;
+          }
              
             break;
             case PACKET_2_RESPONSE:
+            if(T==1){
             memcpy(tel2,&p[4],23);
             Generate_Response(PACKET_2_RESPONSE,GND);
-            
+            T=0;
+            }
             break;
             case PACKET_3_RESPONSE:
+          if(T==1){
            memcpy(tel3,&p[4],23);
             Generate_Response(PACKET_3_RESPONSE,GND);
-            
+         T=0;
+          }
             break;
             
             

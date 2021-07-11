@@ -37,6 +37,7 @@ extern int length1;
 extern int length0;
 extern uint8_t tx_SSP_buff_flag;
 extern uint8_t rx_SSP_buff_flag;
+extern uint8_t T;
 /*******************************************************************************
  *                                 Functions                                   *
  *******************************************************************************/

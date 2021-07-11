@@ -131,16 +131,18 @@ Serial.println("");
       Serial.print(" OBC_State: ");
  switch(frame[11]){
   case 14:Serial.println("Stable");break;
-  case 13:Serial.println("Connection Error");break;
-  case 12:Serial.println("Not Stable"); break;
+  case 13:Serial.println("Connection Failed");break;
+  case 12:Serial.println("Connection Error"); break;
+  case 15:Serial.println("Not Stable"); break;
   
   }
  
        Serial.print(" GND_State: ");
  switch(frame[12]){
   case 14:Serial.println("Stable");break;
-  case 13:Serial.println("Connection Error");break;
-  case 12:Serial.println("Not Stable"); break;
+  case 13:Serial.println("Connection Failed");break;
+  case 12:Serial.println("Connection Error"); break;
+  case 15:Serial.println("Not Stable"); break;
   
   }
         Serial.print(" Satlite_Mode: ");

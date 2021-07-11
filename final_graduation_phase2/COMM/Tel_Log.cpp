@@ -17,13 +17,15 @@ uint8_t *packet_telemty1(uint8_t des,uint8_t error_count_GND,uint8_t error_count
      packet1[4]=CAL_Temp_Sen2();  //get_sensor2
      packet1[5]=CAL_Temp_Sen3();  //get_sensor3
 
-     if(error_count_OBC>=3 && error_count_OBC<5) packet1[6]=12;
-     else if(error_count_OBC>=5) packet1[6]=13;
-     else  packet1[6]=14;
+     if(error_count_OBC>3 && error_count_OBC<=5) packet1[6]=12;
+     else if(error_count_OBC>5) packet1[6]=13;
+      else if(error_count_OBC==0) packet1[6]=14;
+     else  packet1[6]=15;
 
-     if(error_count_GND>=3 && error_count_GND<5) packet1[7]=12;
-     else if(error_count_GND>=5) packet1[7]=13;
-     else {packet1[7]=14;}
+     if(error_count_GND>3 && error_count_GND<=5) packet1[7]=12;
+     else if(error_count_GND>5) packet1[7]=13;
+      else if(error_count_GND==0) packet1[7]=14;
+     else {packet1[7]=15;}
 
      packet1[8]= 0xff;
      return packet1;

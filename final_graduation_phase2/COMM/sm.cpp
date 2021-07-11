@@ -191,7 +191,8 @@ void Connected_event_handler(){
                            ax_25_make_S_U_frame(S_SREJ);
 
                         }*/
-          
+                          backup=1;
+                           Extract_I_data();
                          ax_25_make_S_U_frame(S_SREJ);
                         next_state =Connected;
                         }
@@ -201,7 +202,7 @@ void Connected_event_handler(){
 
                    }
                    else{
-                     
+                     if(backup==1){backup=0;sr=1;}
                         Extract_I_data();
                         next_state =Connected;
 

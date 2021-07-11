@@ -17,43 +17,43 @@ void loop() {
 
 if(Serial.available()){
   switch(Serial.read()){
-    case '1':
+    case 'q':
     Event_Triggered=LocalStart;break;
-    case '2':
+    case 'w':
     local_start();break;
 
-    case '3':
+    case 'e':
     Framing(PING_ ,COMM);break;
-      case '4':
+      case 'r':
     Framing(GET_TEL_1,COMM);break;
-         case '5':
+         case 't':
     Framing(GET_PACKET_2,COMM);break;
-         case '6':
+         case 'y':
     Framing(GET_PACKET_3,COMM);break;
-       case '7':
+       case 'u':
     local_end();break;
-    case '8':
+    case 'i':
     Event_Triggered=LocalEnd;break;
 
 
 
 
       
-    case 'q':
+    case '1':
     Event_Triggered=LocalStart;break;
-    case 'w':
+    case '2':
     local_start();break;
-    case 'e':
+    case '3':
     Framing(PING_ ,OBC);break;
-      case 'r':
+      case '4':
     Framing(GET_TEL_1,OBC);break;
-         case 't':
+         case '5':
     Framing(GET_PACKET_2,OBC);break;
-         case 'y':
+         case '6':
     Framing(GET_PACKET_3,OBC);break;
-       case 'u':
+       case '7':
     local_end();break;
-    case 'i':
+    case '8':
     Event_Triggered=LocalEnd;
     break;
     

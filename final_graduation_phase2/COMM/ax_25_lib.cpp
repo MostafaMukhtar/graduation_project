@@ -14,6 +14,7 @@ uint8_t rx_buf_pointer=0;
 uint8_t rx_buf_size=0;
 uint8_t rx_buf_busy=0;
 uint8_t rej_cond=0;
+uint8_t backup=0,sr=0,BACKUP[AX_25_DATA_FIELD_LEN];
 
 //FLOW CONTROL PARAMETERS 
 uint8_t sf=0,sl=2,rf=0,rl=2,s=2,r=0;
@@ -387,11 +388,28 @@ uint8_t Get_VR(void){
 }
 
 void Extract_I_data(void){
+   if(backup==1){
+    memcpy(BACKUP,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
+    
+    }
+
+   
+   else{ 
+  /*  
+    if(sr==1){
+     deframing_ssp(BACKUP);
+     VR=VR+1;
+    if(VR>7)VR=0;
+    }*/
+    
     uint8_t DATA[AX_25_DATA_FIELD_LEN];
     memcpy(DATA,received_ax_25_frame+17,AX_25_DATA_FIELD_LEN);
     VR=VR+1;
     if(VR>7)VR=0;    
     deframing_ssp(DATA);
+    
+    
+    }
 }
 
 
